@@ -2,6 +2,7 @@ package com.dubizzle.listings.presentation.list
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
@@ -36,6 +37,8 @@ class DListActivity : AppCompatActivity() {
         val modelD: DListViewModel by viewModels { DListingsViewModelFactory }
         modelD.listings.observe(this) {
             dListAdapter.items = it
+            binding.recycler.visibility = if(it.isNotEmpty()) View.VISIBLE else View.GONE
+            binding.tvEmpty.visibility = if(it.isEmpty()) View.VISIBLE else View.GONE
         }
         modelD.loadDocuments()
     }

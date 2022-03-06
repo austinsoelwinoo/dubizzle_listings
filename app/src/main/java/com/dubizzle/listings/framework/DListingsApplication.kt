@@ -48,7 +48,6 @@ class DListingsApplication : Application() {
         )
 
         DListingsViewModelFactory.inject(
-            this,
             Interactors(
                 GetListings(repo)
             )

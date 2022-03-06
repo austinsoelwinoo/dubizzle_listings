@@ -30,24 +30,19 @@
 
 package com.dubizzle.listings.framework
 
-import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
 object DListingsViewModelFactory : ViewModelProvider.Factory {
-
-    lateinit var application: Application
-
     lateinit var dependencies: Interactors
 
-    fun inject(application: Application, dependencies: Interactors) {
-        DListingsViewModelFactory.application = application
+    fun inject(dependencies: Interactors) {
         DListingsViewModelFactory.dependencies = dependencies
     }
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (DBaseViewModel::class.java.isAssignableFrom(modelClass)) {
-            return modelClass.getConstructor(Application::class.java, Interactors::class.java)
+            return modelClass.getConstructor(Interactors::class.java)
                 .newInstance(dependencies)
         } else {
             throw IllegalStateException("ViewModel must extend MajesticViewModel")

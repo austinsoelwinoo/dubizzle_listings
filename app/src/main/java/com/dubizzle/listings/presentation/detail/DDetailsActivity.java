@@ -12,10 +12,10 @@ import com.dubizzle.core.domain.Listing;
 import com.dubizzle.listings.databinding.AcitivityDetailsBinding;
 
 public class DDetailsActivity extends AppCompatActivity {
-    private static final String INTENT_EXTRA_PARAM_LISTING_CREATED_AT = "INTENT_EXTRA_PARAM_LISTING_CREATED_AT";
-    private static final String INTENT_EXTRA_PARAM_LISTING_PRICE = "INTENT_EXTRA_PARAM_LISTING_PRICE";
-    private static final String INTENT_EXTRA_PARAM_LISTING_NAME = "INTENT_EXTRA_PARAM_LISTING_NAME";
-    private static final String INTENT_EXTRA_PARAM_LISTING_IMAGE_URL = "INTENT_EXTRA_PARAM_LISTING_IMAGE_URL";
+    public static final String INTENT_EXTRA_PARAM_LISTING_CREATED_AT = "INTENT_EXTRA_PARAM_LISTING_CREATED_AT";
+    public static final String INTENT_EXTRA_PARAM_LISTING_PRICE = "INTENT_EXTRA_PARAM_LISTING_PRICE";
+    public static final String INTENT_EXTRA_PARAM_LISTING_NAME = "INTENT_EXTRA_PARAM_LISTING_NAME";
+    public static final String INTENT_EXTRA_PARAM_LISTING_IMAGE_URL = "INTENT_EXTRA_PARAM_LISTING_IMAGE_URL";
 
     public static Intent getCallingIntent(Context context, Listing listing) {
         Intent callingIntent = new Intent(context, DDetailsActivity.class);
@@ -38,8 +38,7 @@ public class DDetailsActivity extends AppCompatActivity {
         String name = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_NAME);
         String imageUrl = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_IMAGE_URL);
 
-        Glide
-                .with(this)
+        Glide.with(this)
                 .load(imageUrl)
                 .into(binding.ivListingImage);
         binding.tvListingName.setText(name);
