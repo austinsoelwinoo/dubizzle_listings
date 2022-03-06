@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.dubizzle.core.domain.Listing
 import com.dubizzle.listings.databinding.ViewListItemBinding
 import kotlin.properties.Delegates
@@ -28,7 +29,10 @@ class DListAdapter : RecyclerView.Adapter<DListAdapter.ViewHolder>() {
     class ViewHolder(private val binding: ViewListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(listing: Listing) {
-            binding.tvItemName.text = listing.name
+            Glide
+                .with(this.itemView)
+                .load(listing.imageUrlsThumbnails[0])
+                .into(binding.ivListing)
         }
     }
 }
