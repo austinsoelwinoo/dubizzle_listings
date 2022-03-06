@@ -1,6 +1,7 @@
 package com.dubizzle.listings.presentation.list
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -10,7 +11,10 @@ import com.dubizzle.listings.databinding.ViewListItemBinding
 import kotlin.properties.Delegates
 
 @SuppressLint("NotifyDataSetChanged")
-class DListAdapter : RecyclerView.Adapter<DListAdapter.ViewHolder>() {
+class DListAdapter(
+    private val context: Context,
+    private val listener: ActionClickListener
+) : RecyclerView.Adapter<DListAdapter.ViewHolder>() {
 
     var items: List<Listing> by Delegates.observable(emptyList()) { _, _, _ -> notifyDataSetChanged() }
 
@@ -21,12 +25,16 @@ class DListAdapter : RecyclerView.Adapter<DListAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(items[position])
+        val listing = items[position]
+        holder.bind(listing)
+        holder.binding.ivListing.setOnClickListener {
+            listener.clicked(listing)
+        }
     }
 
     override fun getItemCount(): Int = items.size
 
-    class ViewHolder(private val binding: ViewListItemBinding) :
+    class ViewHolder(val binding: ViewListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(listing: Listing) {
             Glide
@@ -34,5 +42,9 @@ class DListAdapter : RecyclerView.Adapter<DListAdapter.ViewHolder>() {
                 .load(listing.imageUrlsThumbnails[0])
                 .into(binding.ivListing)
         }
+    }
+
+    interface ActionClickListener {
+        fun clicked(listing: Listing)
     }
 }
