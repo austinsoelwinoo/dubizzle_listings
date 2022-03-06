@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.dubizzle.core.domain.Listing;
 import com.dubizzle.listings.databinding.AcitivityDetailsBinding;
 
@@ -37,6 +38,12 @@ public class DDetailsActivity extends AppCompatActivity {
         String name = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_NAME);
         String imageUrl = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_IMAGE_URL);
 
+        Glide
+                .with(this)
+                .load(imageUrl)
+                .into(binding.ivListingImage);
         binding.tvListingName.setText(name);
+        binding.tvListingPrice.setText(price);
+        binding.tvListingCreated.setText(createdAt);
     }
 }
