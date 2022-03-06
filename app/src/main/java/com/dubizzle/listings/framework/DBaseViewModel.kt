@@ -30,9 +30,8 @@
 
 package com.dubizzle.listings.framework
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 
-open class DBaseViewModel(application: Application, protected val interactors: Interactors) :
-    AndroidViewModel(application) {
+open class DBaseViewModel(protected val interactors: Interactors) :
+    ViewModel() {
 }

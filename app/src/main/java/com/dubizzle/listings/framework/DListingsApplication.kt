@@ -43,14 +43,14 @@ class DListingsApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val documentRepository = ListingsRemoteRepository(
+        val repo = ListingsRemoteRepository(
             ListingsRemoteDataSourceImpl(networkModule.createListingsApi(NetworkModule.AWS_APIS_ENDPOINT))
         )
 
         DListingsViewModelFactory.inject(
             this,
             Interactors(
-                GetListings(documentRepository)
+                GetListings(repo)
             )
         )
     }

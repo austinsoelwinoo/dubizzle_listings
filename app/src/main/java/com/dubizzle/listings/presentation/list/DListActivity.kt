@@ -34,7 +34,7 @@ class DListActivity : AppCompatActivity() {
         binding.recycler.adapter = dListAdapter
         binding.recycler.layoutManager = mGridLayoutManager
         val modelD: DListViewModel by viewModels { DListingsViewModelFactory }
-        modelD.documents.observe(this) {
+        modelD.listings.observe(this) {
             dListAdapter.items = it
         }
         modelD.loadDocuments()

@@ -7,7 +7,7 @@ data class Listing(
     @SerializedName("price") var price: String,
     @SerializedName("name") var name: String,
     @SerializedName("uid") var uid: String,
-    @SerializedName("image_ids") var imageIds: ArrayList<String> = arrayListOf(),
-    @SerializedName("image_urls") var imageUrls: ArrayList<String> = arrayListOf(),
-    @SerializedName("image_urls_thumbnails") var imageUrlsThumbnails: ArrayList<String> = arrayListOf()
+    @SerializedName("image_ids") var imageIds: List<String> = listOf(),
+    @SerializedName("image_urls") var imageUrls: List<String> = listOf(),
+    @SerializedName("image_urls_thumbnails") var imageUrlsThumbnails: List<String> = listOf()
 )
