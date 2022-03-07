@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dubizzle.core.domain.Listing
 import com.dubizzle.listings.databinding.ViewListItemBinding
+import com.dubizzle.minimalimageloader.ImageLoader
 import kotlin.properties.Delegates
 
 @SuppressLint("NotifyDataSetChanged")
@@ -37,10 +38,12 @@ class DListAdapter(
     class ViewHolder(val binding: ViewListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(listing: Listing) {
-            Glide
-                .with(this.itemView)
-                .load(listing.imageUrlsThumbnails[0])
-                .into(binding.ivListing)
+            ImageLoader.with(binding.root.context)
+                .load(binding.ivListing, listing.retrieveFirstImageThumbnail())
+//            Glide
+//                .with(this.itemView)
+//                .load(listing.retrieveFirstImageThumbnail())
+//                .into(binding.ivListing)
         }
     }
 

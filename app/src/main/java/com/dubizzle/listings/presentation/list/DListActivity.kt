@@ -32,6 +32,7 @@ class DListActivity : AppCompatActivity() {
                 }
             }
         })
+
         binding.recycler.adapter = dListAdapter
         binding.recycler.layoutManager = mGridLayoutManager
         val modelD: DListViewModel by viewModels { DListingsViewModelFactory }

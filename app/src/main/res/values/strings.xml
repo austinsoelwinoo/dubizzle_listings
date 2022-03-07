@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">dubizzle listings</string>
+    <string name="created_date_text">Posted on %1$s</string>
 </resources>
