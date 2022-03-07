@@ -1,32 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/ivListingImage"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="320dp"
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/listing_placeholder" />
+
     <TextView
         android:id="@+id/tvListingName"
-        app:layout_constraintTop_toBottomOf="@+id/ivListingImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/layout_margin_horizontal"
+        android:layout_marginVertical="@dimen/layout_margin_vertical"
+        android:layout_weight="1"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/tvListingPrice"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        app:layout_constraintTop_toBottomOf="@+id/ivListingImage"
+        tools:text="IKEA Sofa" />
+
     <TextView
         android:id="@+id/tvListingPrice"
-        app:layout_constraintTop_toBottomOf="@+id/tvListingName"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/layout_margin_horizontal"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        android:textColor="@color/dubizzle_color"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/tvListingName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tvListingName"
+        app:layout_constraintTop_toTopOf="@+id/tvListingName"
+        tools:text="AED 900" />
+
     <TextView
         android:id="@+id/tvListingCreated"
-        app:layout_constraintTop_toBottomOf="@+id/tvListingPrice"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/layout_margin_horizontal"
+        android:layout_marginVertical="@dimen/layout_margin_vertical"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvListingName"
+        tools:text="Posted On March 07,2022" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
