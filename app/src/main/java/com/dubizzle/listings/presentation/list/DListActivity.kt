@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.dubizzle.core.domain.Listing
+import com.dubizzle.listings.R
 import com.dubizzle.listings.databinding.ActivityListBinding
 import com.dubizzle.listings.framework.DListingsViewModelFactory
 import com.dubizzle.listings.presentation.calculateNoOfColumns
@@ -21,7 +22,10 @@ class DListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val mNoOfColumns: Int = calculateNoOfColumns(applicationContext, 128.0f)
+
+        supportActionBar?.title = getString(R.string.listings)
+
+        val mNoOfColumns: Int = calculateNoOfColumns(applicationContext, 130.0f)
         val mGridLayoutManager = GridLayoutManager(applicationContext, mNoOfColumns)
         val dListAdapter =
             DListAdapter(applicationContext, object : DListAdapter.ActionClickListener {

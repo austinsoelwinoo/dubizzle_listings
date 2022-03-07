@@ -38,12 +38,12 @@ class DListAdapter(
     class ViewHolder(val binding: ViewListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(listing: Listing) {
-            ImageLoader.with(binding.root.context)
-                .load(binding.ivListing, listing.retrieveFirstImageThumbnail())
-//            Glide
-//                .with(this.itemView)
-//                .load(listing.retrieveFirstImageThumbnail())
-//                .into(binding.ivListing)
+//            ImageLoader.with(binding.root.context)
+//                .load(binding.ivListing, listing.retrieveFirstImageThumbnail())
+            Glide
+                .with(this.itemView)
+                .load(listing.retrieveFirstImageThumbnail())
+                .into(binding.ivListing)
         }
     }
 

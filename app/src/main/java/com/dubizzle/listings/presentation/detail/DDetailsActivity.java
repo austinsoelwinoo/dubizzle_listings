@@ -34,6 +34,11 @@ public class DDetailsActivity extends AppCompatActivity {
         AcitivityDetailsBinding binding = AcitivityDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        if (getSupportActionBar() !=null){
+            getSupportActionBar().setTitle(R.string.listing_detail);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         String createdAt = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_CREATED_AT);
         String price = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_PRICE);
         String name = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_NAME);

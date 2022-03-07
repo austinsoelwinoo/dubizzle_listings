@@ -20,7 +20,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.detail.DDetailsActivity">
+            android:name=".presentation.detail.DDetailsActivity"
+            android:parentActivityName=".presentation.list.DListActivity">
         </activity>
     </application>
 

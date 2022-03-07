@@ -2,4 +2,5 @@
 <resources>
     <dimen name="layout_margin_horizontal">16dp</dimen>
     <dimen name="layout_margin_vertical">4dp</dimen>
+    <dimen name="listing_image_dimen">130dp</dimen>
 </resources>
