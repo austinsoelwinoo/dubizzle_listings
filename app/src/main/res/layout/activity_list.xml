@@ -7,10 +7,19 @@
     android:orientation="vertical"
     tools:context=".presentation.list.DListActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="@string/listings"
+        app:titleTextColor="@android:color/white" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         tools:listitem="@layout/view_list_item" />
 
     <ProgressBar
@@ -18,14 +27,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:indeterminate="true" />
+        android:indeterminate="true"
+        android:indeterminateTint="@color/dubizzle_color"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tvEmpty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:text="No listings found." />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

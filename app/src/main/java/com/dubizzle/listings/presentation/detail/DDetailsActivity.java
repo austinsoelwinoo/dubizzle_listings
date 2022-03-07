@@ -3,6 +3,7 @@ package com.dubizzle.listings.presentation.detail;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,11 +34,8 @@ public class DDetailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AcitivityDetailsBinding binding = AcitivityDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
-        if (getSupportActionBar() !=null){
-            getSupportActionBar().setTitle(R.string.listing_detail);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        setSupportActionBar(binding.toolbar);
+        binding.toolbar.setNavigationOnClickListener(view -> finish());
 
         String createdAt = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_CREATED_AT);
         String price = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_PRICE);
@@ -46,8 +44,9 @@ public class DDetailsActivity extends AppCompatActivity {
 
         Glide.with(this)
                 .load(imageUrl)
-                .placeholder(R.drawable.ic_launcher_background)
+                .placeholder(R.drawable.listing_item_placeholder)
                 .into(binding.ivListingImage);
+
         binding.tvListingName.setText(name);
         binding.tvListingPrice.setText(price);
         binding.tvListingCreated.setText(getString(R.string.created_date_text,createdAt));

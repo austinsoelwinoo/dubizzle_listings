@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.dubizzle.core.domain.Listing
+import com.dubizzle.listings.R
 import com.dubizzle.listings.databinding.ViewListItemBinding
 import com.dubizzle.minimalimageloader.ImageLoader
 import kotlin.properties.Delegates
 
-@SuppressLint("NotifyDataSetChanged")
 class DListAdapter(
     private val context: Context,
     private val listener: ActionClickListener
@@ -43,6 +43,7 @@ class DListAdapter(
             Glide
                 .with(this.itemView)
                 .load(listing.retrieveFirstImageThumbnail())
+                .placeholder(R.drawable.listing_item_placeholder)
                 .into(binding.ivListing)
         }
     }

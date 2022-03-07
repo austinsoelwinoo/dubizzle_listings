@@ -54,7 +54,7 @@ class DListActivityTest {
 
     @Test
     fun item_loaded_properly() {
-        onView(withId(R.id.tvEmpty)).check(matches(isDisplayed()))
+        onView(withId(R.id.pbLoading)).check(matches(isDisplayed()))
         onView(isRoot()).perform(waitForView(R.id.recycler, 10000)).check(matches(isDisplayed()))
 
         onView(withId(R.id.tvEmpty)).check(matches(not(isDisplayed())))
@@ -74,6 +74,8 @@ class DListActivityTest {
         intended(hasExtraWithKey(DDetailsActivity.INTENT_EXTRA_PARAM_LISTING_IMAGE_URL))
 
         onView(withId(R.id.tvListingName)).check(matches(textViewHasValue()))
+        onView(withId(R.id.tvListingPrice)).check(matches(textViewHasValue()))
+        onView(withId(R.id.tvListingCreated)).check(matches(textViewHasValue()))
     }
 
     @After

@@ -5,6 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="@string/listing_detail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_arrow_back_24"
+        app:titleTextColor="@android:color/white" />
+
     <ImageView
         android:id="@+id/ivListingImage"
         android:layout_width="match_parent"
@@ -12,8 +23,22 @@
         android:contentDescription="@string/app_name"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/listing_placeholder" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:src="@drawable/listing_item_placeholder" />
+
+    <TextView
+        android:id="@+id/tvListingPrice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/layout_margin_horizontal"
+        android:layout_marginVertical="@dimen/layout_margin_vertical"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
+        android:textColor="@color/dubizzle_color"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivListingImage"
+        tools:text="AED 900" />
 
     <TextView
         android:id="@+id/tvListingName"
@@ -21,31 +46,12 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/layout_margin_horizontal"
         android:layout_marginVertical="@dimen/layout_margin_vertical"
-        android:layout_weight="1"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/tvListingPrice"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivListingImage"
-        tools:text="IKEA Sofa" />
-
-    <TextView
-        android:id="@+id/tvListingPrice"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/layout_margin_horizontal"
-        android:layout_weight="1"
-        android:gravity="end"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
-        android:textColor="@color/dubizzle_color"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/tvListingName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvListingName"
-        app:layout_constraintTop_toTopOf="@+id/tvListingName"
-        tools:text="AED 900" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvListingPrice"
+        tools:text="IKEA Sofa" />
 
     <TextView
         android:id="@+id/tvListingCreated"
