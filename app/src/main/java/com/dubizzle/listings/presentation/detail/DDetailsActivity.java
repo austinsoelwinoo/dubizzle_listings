@@ -41,6 +41,7 @@ public class DDetailsActivity extends AppCompatActivity {
 
         Glide.with(this)
                 .load(imageUrl)
+                .placeholder(R.drawable.ic_launcher_background)
                 .into(binding.ivListingImage);
         binding.tvListingName.setText(name);
         binding.tvListingPrice.setText(price);

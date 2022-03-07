@@ -47,7 +47,7 @@ class DListActivityTest {
     )
 
     @Before
-    fun stubCameraIntent() {
+    fun setup() {
         // Initializes Intents and begins recording intents.
         Intents.init()
     }

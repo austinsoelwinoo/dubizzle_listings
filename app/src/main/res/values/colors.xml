@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="dubizzle_color">#E00000</color>
+    <color name="dubizzle_color_secondary">#7CE00000</color>
 </resources>

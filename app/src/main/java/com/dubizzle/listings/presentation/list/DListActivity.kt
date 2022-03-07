@@ -21,26 +21,33 @@ class DListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val mNoOfColumns: Int = calculateNoOfColumns(applicationContext,128.0f)
+        val mNoOfColumns: Int = calculateNoOfColumns(applicationContext, 128.0f)
         val mGridLayoutManager = GridLayoutManager(applicationContext, mNoOfColumns)
-        val dListAdapter = DListAdapter(applicationContext, object : DListAdapter.ActionClickListener {
-            override fun clicked(listing: Listing) {
-                val currentActivity = this@DListActivity
-                if (currentActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-                    currentActivity.startActivity(DDetailsActivity.getCallingIntent(currentActivity, listing))
+        val dListAdapter =
+            DListAdapter(applicationContext, object : DListAdapter.ActionClickListener {
+                override fun clicked(listing: Listing) {
+                    val currentActivity = this@DListActivity
+                    if (currentActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                        currentActivity.startActivity(
+                            DDetailsActivity.getCallingIntent(
+                                currentActivity,
+                                listing
+                            )
+                        )
+                    }
                 }
-            }
-        })
+            })
 
         binding.recycler.adapter = dListAdapter
         binding.recycler.layoutManager = mGridLayoutManager
         val modelD: DListViewModel by viewModels { DListingsViewModelFactory }
         modelD.listings.observe(this) {
+            binding.pbLoading.visibility = View.GONE
             dListAdapter.items = it
-            binding.recycler.visibility = if(it.isNotEmpty()) View.VISIBLE else View.GONE
-            binding.tvEmpty.visibility = if(it.isEmpty()) View.VISIBLE else View.GONE
+            binding.recycler.visibility = if (it.isNotEmpty()) View.VISIBLE else View.GONE
+            binding.tvEmpty.visibility = if (it.isEmpty()) View.VISIBLE else View.GONE
         }
+        binding.pbLoading.visibility = View.VISIBLE
         modelD.loadDocuments()
     }
 }
