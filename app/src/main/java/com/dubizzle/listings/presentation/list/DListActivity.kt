@@ -2,19 +2,18 @@ package com.dubizzle.listings.presentation.list
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import com.dubizzle.core.domain.Listing
 import com.dubizzle.listings.databinding.ActivityListBinding
-import com.dubizzle.listings.framework.DListingsViewModelFactory
 import com.dubizzle.listings.presentation.calculateNoOfColumns
 import com.dubizzle.listings.presentation.detail.DDetailsActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class DListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityListBinding
-
+    private val modelD: DListViewModel by viewModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityListBinding.inflate(layoutInflater)
@@ -41,9 +40,8 @@ class DListActivity : AppCompatActivity() {
         binding.recycler.adapter = dListAdapter
         binding.recycler.layoutManager = mGridLayoutManager
 
-        val modelD: DListViewModel by viewModels { DListingsViewModelFactory }
         modelD.listings.observe(this) {
-            handleViewState(false,it)
+            handleViewState(false, it)
             dListAdapter.items = it
         }
 

@@ -31,27 +31,20 @@
 package com.dubizzle.listings.framework
 
 import android.app.Application
-import com.dubizzle.core.data.ListingsRemoteRepository
-import com.dubizzle.core.interactors.GetListings
-import com.dubizzle.listings.framework.api.NetworkModule
+import com.dubizzle.listings.di.module.appModule
+import com.dubizzle.listings.di.module.repoModule
+import com.dubizzle.listings.di.module.viewModelModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.GlobalContext.startKoin
 
 class DListingsApplication : Application() {
-    private val networkModule by lazy {
-        NetworkModule()
-    }
-
     override fun onCreate() {
         super.onCreate()
 
-        val repo = ListingsRemoteRepository(
-            ListingsRemoteDataSourceImpl(networkModule.createListingsApi(NetworkModule.AWS_APIS_ENDPOINT))
-        )
-
-        DListingsViewModelFactory.inject(
-            Interactors(
-                GetListings(repo)
-            )
-        )
+        startKoin {
+            androidContext(this@DListingsApplication)
+            modules(listOf(appModule, repoModule, viewModelModule))
+        }
     }
 
 }

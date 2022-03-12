@@ -15,6 +15,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField 'String', 'AWS_APIS_ENDPOINT', "\"https://ey3f2y0nre.execute-api.us-east-1.amazonaws.com/default/\""
     }
 
     buildTypes {
@@ -75,6 +77,10 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
     implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$coroutines_adapter_version"
 
+    //glide
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+
+    //koin
+    implementation "io.insert-koin:koin-android:3.1.5"
 }
