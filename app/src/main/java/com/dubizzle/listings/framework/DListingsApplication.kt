@@ -31,11 +31,14 @@
 package com.dubizzle.listings.framework
 
 import android.app.Application
+import com.dubizzle.listings.BuildConfig
 import com.dubizzle.listings.di.module.appModule
 import com.dubizzle.listings.di.module.repoModule
 import com.dubizzle.listings.di.module.viewModelModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
+import timber.log.Timber.*
+import timber.log.Timber.Forest.plant
 
 class DListingsApplication : Application() {
     override fun onCreate() {
@@ -44,6 +47,10 @@ class DListingsApplication : Application() {
         startKoin {
             androidContext(this@DListingsApplication)
             modules(listOf(appModule, repoModule, viewModelModule))
+        }
+
+        if (BuildConfig.DEBUG) {
+            plant(DebugTree())
         }
     }
 
