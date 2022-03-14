@@ -24,9 +24,13 @@ class DListViewModel(private val interactors: Interactors, val state: SavedState
     var sortOptionItem by state.mutableStateOf(UIOption.SORT_DATE_O_N)
     var listings by state.mutableStateOf(listOf<Listing>())
 
+    var isLoading by state.mutableStateOf(false)
+
     fun loadDocuments() {
+        isLoading = true
         viewModelScope.launch {
             listings = interactors.getListings()
+            isLoading = false
         }
     }
 
