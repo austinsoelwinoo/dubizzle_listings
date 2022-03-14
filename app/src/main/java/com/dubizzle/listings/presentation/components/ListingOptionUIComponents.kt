@@ -11,8 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.dubizzle.listings.presentation.list.UIOption
-
 
 @Composable
 fun GroupByCheckBox(
@@ -90,4 +88,17 @@ fun OptionDropdown(
             }
         }
     }
+}
+
+enum class UIOption(val label: String) {
+    DISPLAY_SIMPLE("Simple List"),
+    DISPLAY_DETAILED("Detailed List"),
+    DISPLAY_GRID("Image Grid"),
+
+    GROUP_BY_DATE("Group by date"),
+
+    SORT_PRICE_H_L("Price Highest to Lowest"),
+    SORT_PRICE_L_H("Price Lowest to Highest"),
+    SORT_DATE_O_N("Oldest to Newest"),
+    SORT_DATE_N_O("Newest to Oldest"),
 }

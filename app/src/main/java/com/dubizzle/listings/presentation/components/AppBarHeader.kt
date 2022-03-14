@@ -14,7 +14,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.dubizzle.listings.presentation.list.DListViewModel
-import com.dubizzle.listings.presentation.list.UIOption
 
 @Composable
 fun AppBarHeader(state: DListViewModel) {
@@ -77,7 +76,7 @@ fun AppBarHeader(state: DListViewModel) {
                     this,
                     listOf(
                         UIOption.SORT_DATE_O_N,
-                        UIOption.SORT_PRICE_N_O,
+                        UIOption.SORT_DATE_N_O,
                         UIOption.SORT_PRICE_H_L,
                         UIOption.SORT_PRICE_L_H
                     ),

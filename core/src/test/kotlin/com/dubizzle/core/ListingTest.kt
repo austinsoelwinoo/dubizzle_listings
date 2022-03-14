@@ -47,4 +47,16 @@ class ListingTest {
 
         assertEquals("",emptyListing.prettifiedCreatedAt())
     }
+
+    @Test
+    fun listing_extractPriceValue() {
+        assertEquals( 12,dummyListing.extractPriceValue())
+        assertEquals( 0,emptyListing.extractPriceValue())
+    }
+
+    @Test
+    fun listing_extractCreatedAtDateValue() {
+        assertEquals( "Sun Feb 24 02:50:36 ICT 2019",dummyListing.extractCreatedAtDateValue().toString())
+        assertEquals( null,emptyListing.extractCreatedAtDateValue())
+    }
 }

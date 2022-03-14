@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dubizzle.core.domain.Listing
 import com.dubizzle.listings.framework.Interactors
+import com.dubizzle.listings.presentation.components.UIOption
 import com.dubizzle.listings.presentation.utils.mutableStateOf
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -16,34 +16,34 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class DListViewModel(private val interactors: Interactors, val state: SavedStateHandle) : ViewModel() {
+class DListViewModel(private val interactors: Interactors, val state: SavedStateHandle) :
+    ViewModel() {
     var text by state.mutableStateOf("")
     var isGroupChecked by state.mutableStateOf(false)
     var displayOptionItem by state.mutableStateOf(UIOption.DISPLAY_SIMPLE)
     var sortOptionItem by state.mutableStateOf(UIOption.SORT_DATE_O_N)
-
-    val listings: MutableLiveData<List<Listing>> = MutableLiveData()
+    var listings by state.mutableStateOf(listOf<Listing>())
 
     fun loadDocuments() {
         viewModelScope.launch {
-            listings.postValue(interactors.getListings())
+            listings = interactors.getListings()
         }
     }
 
-
     val result by state.mutableStateOf(emptyList<Listing>()) { valueLoadedFromState, setter ->
         snapshotFlow {
-            NTuple4(
+            NTuple5(
                 text,
                 isGroupChecked,
                 displayOptionItem,
-                sortOptionItem
+                sortOptionItem,
+                listings
             )
         }
             .drop(if (valueLoadedFromState != null) 1 else 0)
             .map {
                 Timber.d("t1 ${it.t1} t2 ${it.t2} t3 ${it.t3} t4 ${it.t4} ")
-                filterListings(listings, it)
+                filterListings(it)
             }
             .onEach {
                 setter(it)
@@ -52,12 +52,20 @@ class DListViewModel(private val interactors: Interactors, val state: SavedState
     }
 
     private fun filterListings(
-        listings: MutableLiveData<List<Listing>>,
-        nTuple4: NTuple4<String, Boolean, UIOption, UIOption>
+        nTuple4: NTuple5<String, Boolean, UIOption, UIOption, List<Listing>>
     ): List<Listing> {
-        val filterListings = listings.value ?: emptyList()
-        return filterListings.filter { it.name.contains(nTuple4.t1) }
+        return nTuple4.t5.filter { it.name.contains(nTuple4.t1) }.sortBySortOption(nTuple4.t4)
     }
 }
 
-data class NTuple4<T1, T2, T3, T4>(val t1: T1, val t2: T2, val t3: T3, val t4: T4)
+fun List<Listing>.sortBySortOption(uiOption: UIOption): List<Listing> {
+    return when (uiOption) {
+        UIOption.SORT_DATE_O_N -> this.sortedBy { it.extractCreatedAtDateValue() }
+        UIOption.SORT_DATE_N_O -> this.sortedByDescending { it.extractCreatedAtDateValue() }
+        UIOption.SORT_PRICE_L_H -> this.sortedBy { it.extractPriceValue() }
+        UIOption.SORT_PRICE_H_L -> this.sortedByDescending { it.extractPriceValue() }
+        else -> this
+    }
+}
+
+data class NTuple5<T1, T2, T3, T4, T5>(val t1: T1, val t2: T2, val t3: T3, val t4: T4, val t5: T5)
