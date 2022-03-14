@@ -1,35 +1,35 @@
 package com.dubizzle.listings.presentation.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.GridCells
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.dubizzle.core.domain.Listing
 import com.dubizzle.listings.R
-
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import kotlinx.coroutines.launch
 
 @Composable
 fun ListListings(
@@ -37,17 +37,50 @@ fun ListListings(
     isSimple: Boolean,
     onListingClick: (Listing) -> Unit
 ) {
-    LazyColumn(
-        modifier = Modifier.fillMaxWidth(),
-        contentPadding = PaddingValues(4.dp)
-    ) {
-        groupedListings.forEach { (date, gList) ->
-            item {
-                CharacterHeader(date)
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    Box {
+        LazyColumn(
+            state = listState,
+            modifier = Modifier.fillMaxWidth(),
+            contentPadding = PaddingValues(4.dp)
+        ) {
+            groupedListings.forEach { (date, gList) ->
+                item {
+                    CharacterHeader(date)
+                }
+                items(gList) { listing ->
+                    ListListingItemCard(listing, isSimple, onListingClick)
+                }
             }
-            items(gList) { listing ->
-                ListListingItemCard(listing, isSimple, onListingClick)
+        }
+
+        if (listState.firstVisibleItemIndex > 5) {
+            ScrollToTopButton(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.BottomCenter)
+            ) {
+                scope.launch {
+                    listState.animateScrollToItem(0)
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun ScrollToTopButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Box(modifier) {
+        Button(
+            onClick = onClick,
+            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.dubizzle_color))
+        ) {
+            Icon(
+                Icons.Filled.ArrowUpward,
+                stringResource(R.string.scroll_to_top_content_description),
+                tint = Color.White
+            )
         }
     }
 }
@@ -74,15 +107,32 @@ fun CharacterHeader(character: String) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GridListings(listings: List<Listing>, onListingClick: (Listing) -> Unit) {
-    LazyVerticalGrid(
-        cells = GridCells.Adaptive(160.dp),
-        contentPadding = PaddingValues(16.dp),
-        content = {
-            items(listings) { listing ->
-                GridListingItemCard(listing, onListingClick)
+    val listState = rememberLazyGridState()
+    val scope = rememberCoroutineScope()
+    Box {
+        LazyVerticalGrid(
+            state = listState,
+            cells = GridCells.Adaptive(160.dp),
+            contentPadding = PaddingValues(16.dp),
+            content = {
+                items(listings) { listing ->
+                    GridListingItemCard(listing, onListingClick)
+                }
+            }
+        )
+
+        if (listState.firstVisibleItemIndex > 5) {
+            ScrollToTopButton(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .align(Alignment.BottomCenter)
+            ) {
+                scope.launch {
+                    listState.animateScrollToItem(0)
+                }
             }
         }
-    )
+    }
 }
 
 @Composable

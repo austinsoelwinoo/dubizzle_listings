@@ -7,6 +7,11 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="blue_800">#1565C0</color>
+
     <color name="dubizzle_color">#E00000</color>
     <color name="dubizzle_color_secondary">#7CE00000</color>
+
+    <color name="scroll_to_top_button_color">@color/blue_800</color>
+    <color name="scroll_to_top_button_icon_tint">@color/white</color>
 </resources>

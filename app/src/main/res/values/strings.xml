@@ -3,4 +3,6 @@
     <string name="created_date_text">Posted on %1$s</string>
     <string name="listings">Listings</string>
     <string name="listing_detail">Listing Detail</string>
+
+    <string name="scroll_to_top_content_description">Scroll to top</string>
 </resources>
