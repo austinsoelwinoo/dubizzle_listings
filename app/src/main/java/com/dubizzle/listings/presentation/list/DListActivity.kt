@@ -31,6 +31,7 @@ import androidx.lifecycle.LiveData
 import coil.compose.AsyncImage
 import com.dubizzle.core.domain.Listing
 import com.dubizzle.listings.R
+import com.dubizzle.listings.presentation.components.*
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import timber.log.Timber
 
@@ -41,7 +42,7 @@ class DListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                AppBars(state = viewModel)
+                ScreenContent(state = viewModel)
             }
 
         }
@@ -49,306 +50,36 @@ class DListActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun AppBars(state: DListViewModel) {
+    fun ScreenContent(state: DListViewModel) {
         Column {
-            Surface(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Transparent)
-                        .padding(8.dp)
-                ) {
-                    OutlinedTextField(
-                        value = state.text,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .padding(0.dp)
-                            .background(Color.Transparent),
-                        maxLines = 1,
-                        onValueChange = { state.text = it },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Search,
-                        ),
-                        shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 10)),
-                        placeholder = { Text(text = "Search product by name") },
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Search,
-                                contentDescription = ""
-                            )
-                        },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            backgroundColor = Color.LightGray,
-                            focusedBorderColor = Color.LightGray,
-                            unfocusedBorderColor = Color.LightGray
-                        )
-                    )
-
-                }
+            AppBarHeader(state = state)
+            LiveDataComponent(state.result, state.displayOptionItem) { listing ->
+                Timber.d("onListingClick $listing")
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .padding(horizontal = 8.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1.5f)
-                        .background(
-                            color = Color.LightGray,
-                            shape = MaterialTheme.shapes.small.copy(CornerSize(10))
-                        )
-                        .padding(horizontal = 8.dp)
-                ) {
-                    DropdownDemo(
-                        this,
-                        listOf(
-                            UIOption.SORT_DATE_O_N,
-                            UIOption.SORT_PRICE_N_O,
-                            UIOption.SORT_PRICE_H_L,
-                            UIOption.SORT_PRICE_L_H
-                        ),
-                        state.sortOptionItem
-                    ) { state.sortOptionItem = it }
-                }
-
-                Spacer(
-                    modifier = Modifier
-                        .weight(0.02f)
-                        .padding(horizontal = 4.dp)
-                        .fillMaxHeight()
-                        .background(Color.LightGray)
-                )
-
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(
-                            color = Color.LightGray,
-                            shape = MaterialTheme.shapes.small.copy(CornerSize(10))
-                        )
-                        .padding(horizontal = 8.dp)
-                ) {
-                    DropdownDemo(
-                        this,
-                        listOf(
-                            UIOption.DISPLAY_SIMPLE,
-                            UIOption.DISPLAY_ADVANCED,
-                            UIOption.DISPLAY_GRID,
-                        ),
-                        state.displayOptionItem
-                    ) { state.displayOptionItem = it }
-                }
-            }
-            CheckBoxDemo(state.isGroupChecked) { state.isGroupChecked = it }
-            Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(Color.LightGray)
-            )
-            LiveDataComponent(state.result)
         }
     }
 
     @Composable
-    fun CheckBoxDemo(
-        isChecked: Boolean,
-        onCheckedChange: (Boolean) -> Unit
+    fun LiveDataComponent(
+        listings: List<Listing>,
+        displayOptionItem: UIOption,
+        onListingClick: (Listing) -> Unit
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp),
-        ) {
-            Row {
-                Checkbox(
-                    checked = isChecked,
-                    onCheckedChange = onCheckedChange,
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                    colors = CheckboxDefaults.colors(Color.Red)
-                )
-                Spacer(modifier = Modifier.size(4.dp))
-                Text(
-                    UIOption.GROUP_BY_DATE.label,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-        }
-    }
-
-    @Composable
-    fun DropdownDemo(
-        boxScope: BoxScope,
-        items: List<UIOption>,
-        selectedIndex: Int,
-        onSortOptionItemChanged: (Int) -> Unit
-    ) {
-        var expanded by remember { mutableStateOf(false) }
-
-        boxScope.apply {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
-                    .align(Alignment.Center)
-                    .clickable(onClick = { expanded = true })
-            ) {
-                Text(
-                    items[selectedIndex].label,
-                    modifier = Modifier
-                        .wrapContentWidth()
-                        .align(Alignment.CenterStart),
-                )
-                Icon(
-                    Icons.Default.ArrowDropDown,
-                    "",
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .width(24.dp)
-                )
-            }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-                    .background(
-                        Color.LightGray
-                    )
-            ) {
-                items.forEachIndexed { index, s ->
-                    DropdownMenuItem(onClick = {
-                        onSortOptionItemChanged.invoke(index)
-                        expanded = false
-                    }) {
-                        Text(text = s.label)
-                    }
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun LiveDataComponent(listings: List<Listing>) {
         if (listings.isNotEmpty()) {
-            ListingList(listings)
-        }
-    }
-
-    @Composable
-    fun ListingList(listings: List<Listing>) {
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(4.dp)
-        ) {
-            items(listings) { listing ->
-                PlantCard(listing)
+            when (displayOptionItem) {
+                UIOption.DISPLAY_DETAILED -> ListListings(listings, false, onListingClick)
+                UIOption.DISPLAY_GRID -> GridListings(listings, onListingClick)
+                else -> ListListings(listings, true, onListingClick)
             }
         }
     }
 
-    @OptIn(ExperimentalFoundationApi::class)
-    @Composable
-    fun LazyVerticalGridDemo(listings: List<Listing>) {
-        LazyVerticalGrid(
-            cells = GridCells.Adaptive(160.dp),
-
-            // content padding
-            contentPadding = PaddingValues(
-                start = 12.dp,
-                top = 16.dp,
-                end = 12.dp,
-                bottom = 16.dp
-            ),
-            content = {
-                items(listings) { listing ->
-                    GridListingCard(listing)
-                }
-            }
-        )
-    }
-
-    @Composable
-    fun GridListingCard(listing: Listing) {
-        Card(
-            modifier = Modifier
-                .wrapContentHeight()
-                .wrapContentHeight()
-                .clickable(onClick = {
-                    Timber.d("Tapped $listing")
-                }),
-            shape = MaterialTheme.shapes.medium,
-            elevation = 1.dp,
-            backgroundColor = MaterialTheme.colors.surface
-        ) {
-            AsyncImage(
-                model = listing.retrieveFirstImageThumbnail(),
-                placeholder = painterResource(id = R.drawable.listing_item_placeholder),
-                contentDescription = null,
-                modifier = Modifier
-                    .wrapContentHeight()
-                    .wrapContentWidth()
-                    .padding(0.dp),
-                contentScale = ContentScale.Fit,
-            )
-        }
-    }
-
-    @Composable
-    fun PlantCard(listing: Listing) {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .clickable(onClick = {
-                    Timber.d("Tapped $listing")
-                }),
-            shape = MaterialTheme.shapes.medium,
-            elevation = 5.dp,
-            backgroundColor = MaterialTheme.colors.surface
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                AsyncImage(
-                    model = listing.retrieveFirstImageThumbnail(),
-                    placeholder = painterResource(id = R.drawable.listing_item_placeholder),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(80.dp)
-                        .padding(0.dp),
-                    contentScale = ContentScale.Fit,
-                )
-                Column(Modifier.padding(8.dp)) {
-                    Text(
-                        text = listing.name,
-                        style = MaterialTheme.typography.h6,
-                        color = MaterialTheme.colors.onSurface,
-                    )
-                    Text(
-                        text = listing.price,
-                        style = MaterialTheme.typography.body2,
-                    )
-                    Text(
-                        text = listing.prettifiedCreatedAt(),
-                        style = MaterialTheme.typography.body2,
-                    )
-                }
-            }
-        }
-    }
 }
 
 enum class UIOption(val label: String) {
     DISPLAY_SIMPLE("Simple List"),
-    DISPLAY_ADVANCED("Advanced List"),
-    DISPLAY_GRID("Grid"),
+    DISPLAY_DETAILED("Detailed List"),
+    DISPLAY_GRID("Image Grid"),
 
     GROUP_BY_DATE("Group by date"),
 

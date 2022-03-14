@@ -19,8 +19,8 @@ import timber.log.Timber
 class DListViewModel(private val interactors: Interactors, val state: SavedStateHandle) : ViewModel() {
     var text by state.mutableStateOf("")
     var isGroupChecked by state.mutableStateOf(false)
-    var displayOptionItem by state.mutableStateOf(0)
-    var sortOptionItem by state.mutableStateOf(0)
+    var displayOptionItem by state.mutableStateOf(UIOption.DISPLAY_SIMPLE)
+    var sortOptionItem by state.mutableStateOf(UIOption.SORT_DATE_O_N)
 
     val listings: MutableLiveData<List<Listing>> = MutableLiveData()
 
@@ -53,7 +53,7 @@ class DListViewModel(private val interactors: Interactors, val state: SavedState
 
     private fun filterListings(
         listings: MutableLiveData<List<Listing>>,
-        nTuple4: NTuple4<String, Boolean, Int, Int>
+        nTuple4: NTuple4<String, Boolean, UIOption, UIOption>
     ): List<Listing> {
         val filterListings = listings.value ?: emptyList()
         return filterListings.filter { it.name.contains(nTuple4.t1) }
