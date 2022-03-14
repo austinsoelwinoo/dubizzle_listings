@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.dubizzle.core.domain.Listing
@@ -22,30 +24,51 @@ import com.dubizzle.listings.R
 import timber.log.Timber
 
 @Composable
-fun ListListings(listings: List<Listing>, isSimple: Boolean,onListingClick: (Listing) -> Unit) {
+fun ListListings(
+    groupedListings: Map<String, List<Listing>>,
+    isSimple: Boolean,
+    onListingClick: (Listing) -> Unit
+) {
     LazyColumn(
         modifier = Modifier.fillMaxWidth(),
         contentPadding = PaddingValues(4.dp)
     ) {
-        items(listings) { listing ->
-            ListListingItemCard(listing, isSimple,onListingClick)
+        groupedListings.forEach { (date, gList) ->
+            item {
+                CharacterHeader(date)
+            }
+            items(gList) { listing ->
+                ListListingItemCard(listing, isSimple, onListingClick)
+            }
+        }
+    }
+}
+
+@Composable
+fun CharacterHeader(character: String) {
+    if (character.isNotEmpty()) {
+        Column {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            ) {
+                Text(
+                    character,
+                    style = MaterialTheme.typography.subtitle1,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun GridListings(listings: List<Listing>,onListingClick: (Listing) -> Unit) {
+fun GridListings(listings: List<Listing>, onListingClick: (Listing) -> Unit) {
     LazyVerticalGrid(
         cells = GridCells.Adaptive(160.dp),
-
-        // content padding
-        contentPadding = PaddingValues(
-            start = 12.dp,
-            top = 16.dp,
-            end = 12.dp,
-            bottom = 16.dp
-        ),
+        contentPadding = PaddingValues(16.dp),
         content = {
             items(listings) { listing ->
                 GridListingItemCard(listing,onListingClick)
@@ -55,7 +78,7 @@ fun GridListings(listings: List<Listing>,onListingClick: (Listing) -> Unit) {
 }
 
 @Composable
-fun GridListingItemCard(listing: Listing,onListingClick: (Listing) -> Unit) {
+fun GridListingItemCard(listing: Listing, onListingClick: (Listing) -> Unit) {
     Card(
         modifier = Modifier
             .wrapContentHeight()
@@ -82,7 +105,7 @@ fun GridListingItemCard(listing: Listing,onListingClick: (Listing) -> Unit) {
 
 
 @Composable
-fun ListListingItemCard(listing: Listing, isSimple: Boolean,onListingClick: (Listing) -> Unit) {
+fun ListListingItemCard(listing: Listing, isSimple: Boolean, onListingClick: (Listing) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()

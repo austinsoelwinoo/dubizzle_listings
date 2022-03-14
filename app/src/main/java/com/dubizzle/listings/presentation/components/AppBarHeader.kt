@@ -112,7 +112,8 @@ fun AppBarHeader(state: DListViewModel) {
                 ) { state.displayOptionItem = it }
             }
         }
-        GroupByCheckBox(state.isGroupChecked) { state.isGroupChecked = it }
+        if (state.displayOptionItem != UIOption.DISPLAY_GRID)
+            GroupByCheckBox(state.isGroupChecked) { state.isGroupChecked = it }
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()

@@ -30,7 +30,7 @@ class DListViewModel(private val interactors: Interactors, val state: SavedState
         }
     }
 
-    val result by state.mutableStateOf(emptyList<Listing>()) { valueLoadedFromState, setter ->
+    val result by state.mutableStateOf(mapOf<String, List<Listing>>()) { valueLoadedFromState, setter ->
         snapshotFlow {
             NTuple5(
                 text,
@@ -41,8 +41,12 @@ class DListViewModel(private val interactors: Interactors, val state: SavedState
             )
         }
             .drop(if (valueLoadedFromState != null) 1 else 0)
-            .map {
-                filterListings(it)
+            .map { nTuple ->
+                val list = filterListings(nTuple)
+                if (isGroupChecked)
+                    list.groupBy { it.prettifiedCreatedAt() }
+                else
+                    mapOf(Pair("", list))
             }
             .onEach {
                 setter(it)
@@ -53,7 +57,7 @@ class DListViewModel(private val interactors: Interactors, val state: SavedState
     private fun filterListings(
         nTuple4: NTuple5<String, Boolean, UIOption, UIOption, List<Listing>>
     ): List<Listing> {
-        return nTuple4.t5.filter { it.name.contains(nTuple4.t1,true) }.sortBySortOption(nTuple4.t4)
+        return nTuple4.t5.filter { it.name.contains(nTuple4.t1, true) }.sortBySortOption(nTuple4.t4)
     }
 }
 

@@ -39,15 +39,17 @@ class DListActivity : AppCompatActivity() {
 
     @Composable
     fun LiveDataComponent(
-        listings: List<Listing>,
+        groupedListings: Map<String, List<Listing>>,
         displayOptionItem: UIOption,
         onListingClick: (Listing) -> Unit
     ) {
-        if (listings.isNotEmpty()) {
+        if (groupedListings.isNotEmpty()) {
             when (displayOptionItem) {
-                UIOption.DISPLAY_DETAILED -> ListListings(listings, false, onListingClick)
-                UIOption.DISPLAY_GRID -> GridListings(listings, onListingClick)
-                else -> ListListings(listings, true, onListingClick)
+                UIOption.DISPLAY_DETAILED -> ListListings(groupedListings, false, onListingClick)
+                UIOption.DISPLAY_GRID -> GridListings(
+                    groupedListings.values.firstOrNull() ?: emptyList(), onListingClick
+                )
+                else -> ListListings(groupedListings, true, onListingClick)
             }
         }
     }
