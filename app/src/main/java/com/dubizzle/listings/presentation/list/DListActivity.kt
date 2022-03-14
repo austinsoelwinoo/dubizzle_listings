@@ -26,32 +26,30 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.LiveData
 import coil.compose.AsyncImage
 import com.dubizzle.core.domain.Listing
 import com.dubizzle.listings.R
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
 import timber.log.Timber
 
 class DListActivity : AppCompatActivity() {
-    private val modelD: DListViewModel by viewModel()
+    private val viewModel: DListViewModel by stateViewModel()
     var text = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                AppBars()
+                AppBars(state = viewModel)
             }
-            //LiveDataComponent(modelD.listings)
+
         }
-        modelD.loadDocuments()
+        viewModel.loadDocuments()
     }
 
     @Composable
-    fun AppBars() {
-        var value by remember { mutableStateOf(TextFieldValue("")) }
+    fun AppBars(state: DListViewModel) {
         Column {
             Surface(
                 modifier = Modifier.fillMaxWidth()
@@ -63,14 +61,14 @@ class DListActivity : AppCompatActivity() {
                         .padding(8.dp)
                 ) {
                     OutlinedTextField(
-                        value = value,
+                        value = state.text,
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
                             .padding(0.dp)
                             .background(Color.Transparent),
                         maxLines = 1,
-                        onValueChange = { value = it },
+                        onValueChange = { state.text = it },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Text,
                             imeAction = ImeAction.Search,
@@ -103,7 +101,7 @@ class DListActivity : AppCompatActivity() {
                         .weight(1.5f)
                         .background(
                             color = Color.LightGray,
-                            shape = MaterialTheme.shapes.small.copy(CornerSize(20))
+                            shape = MaterialTheme.shapes.small.copy(CornerSize(10))
                         )
                         .padding(horizontal = 8.dp)
                 ) {
@@ -114,13 +112,14 @@ class DListActivity : AppCompatActivity() {
                             UIOption.SORT_PRICE_N_O,
                             UIOption.SORT_PRICE_H_L,
                             UIOption.SORT_PRICE_L_H
-                        )
-                    )
+                        ),
+                        state.sortOptionItem
+                    ) { state.sortOptionItem = it }
                 }
 
                 Spacer(
                     modifier = Modifier
-                        .weight(0.01f)
+                        .weight(0.02f)
                         .padding(horizontal = 4.dp)
                         .fillMaxHeight()
                         .background(Color.LightGray)
@@ -131,7 +130,7 @@ class DListActivity : AppCompatActivity() {
                         .weight(1f)
                         .background(
                             color = Color.LightGray,
-                            shape = MaterialTheme.shapes.small.copy(CornerSize(20))
+                            shape = MaterialTheme.shapes.small.copy(CornerSize(10))
                         )
                         .padding(horizontal = 8.dp)
                 ) {
@@ -141,45 +140,56 @@ class DListActivity : AppCompatActivity() {
                             UIOption.DISPLAY_SIMPLE,
                             UIOption.DISPLAY_ADVANCED,
                             UIOption.DISPLAY_GRID,
-                        )
-                    )
+                        ),
+                        state.displayOptionItem
+                    ) { state.displayOptionItem = it }
                 }
             }
-            CheckBoxDemo()
+            CheckBoxDemo(state.isGroupChecked) { state.isGroupChecked = it }
             Spacer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(1.dp)
                     .background(Color.LightGray)
             )
+            LiveDataComponent(state.result)
         }
     }
 
     @Composable
-    fun CheckBoxDemo() {
+    fun CheckBoxDemo(
+        isChecked: Boolean,
+        onCheckedChange: (Boolean) -> Unit
+    ) {
         Column(
-            modifier = Modifier.fillMaxWidth().height(56.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
         ) {
             Row {
-                val isChecked = remember { mutableStateOf(false) }
                 Checkbox(
-                    checked = isChecked.value,
-                    onCheckedChange = {
-                        isChecked.value = it
-                    },
+                    checked = isChecked,
+                    onCheckedChange = onCheckedChange,
                     modifier = Modifier.align(Alignment.CenterVertically),
                     colors = CheckboxDefaults.colors(Color.Red)
                 )
                 Spacer(modifier = Modifier.size(4.dp))
-                Text(UIOption.GROUP_BY_DATE.label, modifier = Modifier.align(Alignment.CenterVertically))
+                Text(
+                    UIOption.GROUP_BY_DATE.label,
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
             }
         }
     }
 
     @Composable
-    fun DropdownDemo(boxScope: BoxScope, items: List<UIOption>) {
+    fun DropdownDemo(
+        boxScope: BoxScope,
+        items: List<UIOption>,
+        selectedIndex: Int,
+        onSortOptionItemChanged: (Int) -> Unit
+    ) {
         var expanded by remember { mutableStateOf(false) }
-        var selectedIndex by remember { mutableStateOf(2) }
 
         boxScope.apply {
             Box(
@@ -214,7 +224,7 @@ class DListActivity : AppCompatActivity() {
             ) {
                 items.forEachIndexed { index, s ->
                     DropdownMenuItem(onClick = {
-                        selectedIndex = index
+                        onSortOptionItemChanged.invoke(index)
                         expanded = false
                     }) {
                         Text(text = s.label)
@@ -225,10 +235,9 @@ class DListActivity : AppCompatActivity() {
     }
 
     @Composable
-    fun LiveDataComponent(listingsLiveData: LiveData<List<Listing>>) {
-        val listings by listingsLiveData.observeAsState(initial = emptyList())
+    fun LiveDataComponent(listings: List<Listing>) {
         if (listings.isNotEmpty()) {
-            LazyVerticalGridDemo(listings)
+            ListingList(listings)
         }
     }
 
