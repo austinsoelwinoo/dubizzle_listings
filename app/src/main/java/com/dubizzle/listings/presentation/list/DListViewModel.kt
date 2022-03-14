@@ -42,7 +42,6 @@ class DListViewModel(private val interactors: Interactors, val state: SavedState
         }
             .drop(if (valueLoadedFromState != null) 1 else 0)
             .map {
-                Timber.d("t1 ${it.t1} t2 ${it.t2} t3 ${it.t3} t4 ${it.t4} ")
                 filterListings(it)
             }
             .onEach {
@@ -54,7 +53,7 @@ class DListViewModel(private val interactors: Interactors, val state: SavedState
     private fun filterListings(
         nTuple4: NTuple5<String, Boolean, UIOption, UIOption, List<Listing>>
     ): List<Listing> {
-        return nTuple4.t5.filter { it.name.contains(nTuple4.t1) }.sortBySortOption(nTuple4.t4)
+        return nTuple4.t5.filter { it.name.contains(nTuple4.t1,true) }.sortBySortOption(nTuple4.t4)
     }
 }
 
