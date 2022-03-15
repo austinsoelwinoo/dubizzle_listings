@@ -65,6 +65,9 @@ dependencies {
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.0'
     testImplementation "io.insert-koin:koin-test:3.1.5"
     testImplementation "io.insert-koin:koin-test-junit4:3.1.5"
+    def compose_version = '1.1.1'
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
+    testImplementation("androidx.compose.ui:ui-test-manifest:$compose_version")
     androidTestImplementation 'androidx.test:core:1.4.1-alpha04'
 
     implementation "androidx.fragment:fragment-ktx:1.4.1"

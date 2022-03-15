@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -163,6 +164,7 @@ fun ListListingItemCard(listing: Listing, isSimple: Boolean, onListingClick: (Li
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
+            .testTag("ListingTestTag${listing.uid}")
             .clickable(onClick = {
                 onListingClick.invoke(listing)
             }),
@@ -239,9 +241,10 @@ fun PlaceholderListing(modifier: Modifier) {
 
 @Composable
 fun ListItem(
+    index :Int,
     modifier: Modifier = Modifier,
 ) {
-    Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+    Row(Modifier.padding(horizontal = 16.dp, vertical = 8.dp).testTag("LoadingListItemTestTag$index")) {
         Image(
             painter = painterResource(R.drawable.listing_item_placeholder),
             contentDescription = null,
