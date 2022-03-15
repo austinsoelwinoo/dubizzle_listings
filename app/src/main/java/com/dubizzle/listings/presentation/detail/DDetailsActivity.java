@@ -9,23 +9,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.dubizzle.core.domain.Listing;
 import com.dubizzle.listings.R;
+import com.dubizzle.listings.core.domain.Listing;
 import com.dubizzle.listings.databinding.AcitivityDetailsBinding;
+import timber.log.Timber;
 
 public class DDetailsActivity extends AppCompatActivity {
-    public static final String INTENT_EXTRA_PARAM_LISTING_CREATED_AT = "INTENT_EXTRA_PARAM_LISTING_CREATED_AT";
-    public static final String INTENT_EXTRA_PARAM_LISTING_PRICE = "INTENT_EXTRA_PARAM_LISTING_PRICE";
-    public static final String INTENT_EXTRA_PARAM_LISTING_NAME = "INTENT_EXTRA_PARAM_LISTING_NAME";
-    public static final String INTENT_EXTRA_PARAM_LISTING_IMAGE_URL = "INTENT_EXTRA_PARAM_LISTING_IMAGE_URL";
+    public static final String INTENT_EXTRA_PARAM_LISTING = "INTENT_EXTRA_PARAM_LISTING";
 
     public static Intent getCallingIntent(Context context, Listing listing) {
         Intent callingIntent = new Intent(context, DDetailsActivity.class);
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_LISTING_CREATED_AT, listing.prettifiedCreatedAt());
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_LISTING_PRICE, listing.getPrice());
-        callingIntent.putExtra(INTENT_EXTRA_PARAM_LISTING_NAME, listing.getName());
-        if (listing.getImageUrls().size() > 0)
-            callingIntent.putExtra(INTENT_EXTRA_PARAM_LISTING_IMAGE_URL, listing.getImageUrls().get(0));
+        Timber.d("getCallingIntent %s", listing.getName());
+        callingIntent.putExtra(INTENT_EXTRA_PARAM_LISTING, listing);
         return callingIntent;
     }
 
@@ -37,18 +32,15 @@ public class DDetailsActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolbar);
         binding.toolbar.setNavigationOnClickListener(view -> finish());
 
-        String createdAt = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_CREATED_AT);
-        String price = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_PRICE);
-        String name = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_NAME);
-        String imageUrl = getIntent().getStringExtra(INTENT_EXTRA_PARAM_LISTING_IMAGE_URL);
-
+        Listing parcelableListing = getIntent().getParcelableExtra(INTENT_EXTRA_PARAM_LISTING);
+        Timber.d("onCreate %s", parcelableListing.getName());
         Glide.with(this)
-                .load(imageUrl)
+                .load(parcelableListing.retrieveFirstImageUrl())
                 .placeholder(R.drawable.listing_item_placeholder)
                 .into(binding.ivListingImage);
 
-        binding.tvListingName.setText(name);
-        binding.tvListingPrice.setText(price);
-        binding.tvListingCreated.setText(getString(R.string.created_date_text,createdAt));
+        binding.tvListingName.setText(parcelableListing.getName());
+        binding.tvListingPrice.setText(parcelableListing.getPrice());
+        binding.tvListingCreated.setText(getString(R.string.created_date_text, parcelableListing.prettifiedCreatedAt()));
     }
 }

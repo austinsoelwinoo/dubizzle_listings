@@ -1,4 +1,4 @@
-package com.dubizzle.core.common
+package com.dubizzle.listings.core.common
 
 import java.text.ParseException
 import java.text.SimpleDateFormat

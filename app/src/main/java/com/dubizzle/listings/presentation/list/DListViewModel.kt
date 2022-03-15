@@ -1,11 +1,10 @@
 package com.dubizzle.listings.presentation.list
 
 import androidx.compose.runtime.snapshotFlow
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.dubizzle.core.domain.Listing
+import com.dubizzle.listings.core.domain.Listing
 import com.dubizzle.listings.framework.Interactors
 import com.dubizzle.listings.presentation.components.UIOption
 import com.dubizzle.listings.presentation.utils.mutableStateOf
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class DListViewModel(private val interactors: Interactors, val state: SavedStateHandle) :
     ViewModel() {
@@ -22,9 +20,9 @@ class DListViewModel(private val interactors: Interactors, val state: SavedState
     var isGroupChecked by state.mutableStateOf(false)
     var displayOptionItem by state.mutableStateOf(UIOption.DISPLAY_SIMPLE)
     var sortOptionItem by state.mutableStateOf(UIOption.SORT_DATE_O_N)
-    var listings by state.mutableStateOf(listOf<Listing>())
-
     var isLoading by state.mutableStateOf(false)
+
+    var listings by state.mutableStateOf(listOf<Listing>())
 
     fun loadDocuments() {
         isLoading = true

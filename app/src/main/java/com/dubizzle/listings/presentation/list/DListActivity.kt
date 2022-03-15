@@ -11,15 +11,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.VectorPainter
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.dubizzle.core.domain.Listing
-import com.dubizzle.listings.R
+import androidx.lifecycle.Lifecycle
+import com.dubizzle.listings.core.domain.Listing
 import com.dubizzle.listings.presentation.components.*
+import com.dubizzle.listings.presentation.detail.DDetailsActivity
 import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.fade
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
 import org.koin.androidx.viewmodel.ext.android.stateViewModel
@@ -36,6 +33,19 @@ class DListActivity : AppCompatActivity() {
             }
         }
         viewModel.loadDocuments()
+    }
+
+    private fun navigateToDetails(listing: Listing) {
+        val currentActivity = this@DListActivity
+        if (currentActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            Timber.d("navigateToDetails ${listing.name}")
+            currentActivity.startActivity(
+                DDetailsActivity.getCallingIntent(
+                    currentActivity,
+                    listing
+                )
+            )
+        }
     }
 
     @Composable
@@ -56,9 +66,7 @@ class DListActivity : AppCompatActivity() {
             } else {
                 val groupedListings = state.result
                 val displayOptionItem = state.displayOptionItem
-                val onListingClick: (Listing) -> Unit = { listing ->
-                    Timber.d("onListingClick $listing")//TODO link to detail
-                }
+                val onListingClick: (Listing) -> Unit = { navigateToDetails(it) }
                 if (groupedListings.values.flatten().isNotEmpty()) {
                     when (displayOptionItem) {
                         UIOption.DISPLAY_DETAILED -> ListListings(
@@ -82,14 +90,4 @@ class DListActivity : AppCompatActivity() {
             }
         }
     }
-
-    @Composable
-    fun LiveDataComponent(
-        groupedListings: Map<String, List<Listing>>,
-        displayOptionItem: UIOption,
-        onListingClick: (Listing) -> Unit
-    ) {
-
-    }
-
 }

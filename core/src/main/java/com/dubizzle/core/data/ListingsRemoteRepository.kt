@@ -1,5 +1,7 @@
 package com.dubizzle.core.data
 
-class ListingsRemoteRepository(private val datasource: ListingsRemoteDataSource) {
+import com.dubizzle.core.domain.Listing
+
+class ListingsRemoteRepository<T : Listing>(private val datasource: ListingsRemoteDataSource<T>) {
     suspend fun getDocuments() = datasource.readAll()
 }

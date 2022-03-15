@@ -1,7 +1,7 @@
 package com.dubizzle.listings.di.module
 
-import com.dubizzle.core.data.ListingsRemoteDataSource
 import com.dubizzle.listings.BuildConfig
+import com.dubizzle.listings.core.data.ListingsRemoteDataSource
 import com.dubizzle.listings.framework.ListingsRemoteDataSourceImpl
 import com.dubizzle.listings.framework.api.ListingsApi
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory

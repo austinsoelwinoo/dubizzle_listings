@@ -28,7 +28,7 @@
  * THE SOFTWARE.
  */
 
-package com.dubizzle.listings.framework
+package com.dubizzle.listings
 
 import android.app.Application
 import com.dubizzle.listings.BuildConfig

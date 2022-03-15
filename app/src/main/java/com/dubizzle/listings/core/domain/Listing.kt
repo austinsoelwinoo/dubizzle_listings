@@ -1,20 +1,23 @@
-package com.dubizzle.core.domain
+package com.dubizzle.listings.core.domain
 
-import com.dubizzle.core.common.prettifiedDate
+import android.os.Parcelable
+import com.dubizzle.listings.core.common.prettifiedDate
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-open class Listing(
-    open @SerializedName("created_at") var createdAt: String = "",
-    open @SerializedName("price") var price: String = "",
-    open  @SerializedName("name") var name: String = "",
-    open @SerializedName("uid") var uid: String = "",
-    open @SerializedName("image_ids") var imageIds: Array<String> = emptyArray(),
-    open @SerializedName("image_urls") var imageUrls: Array<String> = emptyArray(),
-    open @SerializedName("image_urls_thumbnails") var imageUrlsThumbnails: Array<String> = emptyArray()
-) {
+@Parcelize
+data class Listing(
+    @SerializedName("created_at") var createdAt: String = "",
+    @SerializedName("price") var price: String = "",
+    @SerializedName("name") var name: String = "",
+    @SerializedName("uid") var uid: String = "",
+    @SerializedName("image_ids") var imageIds: List<String> = emptyList(),
+    @SerializedName("image_urls") var imageUrls: List<String> = emptyList(),
+    @SerializedName("image_urls_thumbnails") var imageUrlsThumbnails: List<String> = emptyList()
+) : Parcelable {
     fun retrieveFirstImageUrl(): String {
         return imageUrls.firstOrNull() ?: ""
     }
