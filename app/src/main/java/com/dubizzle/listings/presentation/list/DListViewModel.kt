@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class DListViewModel(private val interactors: Interactors, val state: SavedStateHandle) :
+class DListViewModel(val interactors: Interactors, val state: SavedStateHandle) :
     ViewModel() {
 
     var text by state.mutableStateOf("")

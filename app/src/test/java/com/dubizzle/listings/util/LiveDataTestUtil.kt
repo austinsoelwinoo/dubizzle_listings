@@ -2,6 +2,13 @@ package com.dubizzle.listings.util
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.test.*
+import org.hamcrest.Description
+import org.junit.rules.TestWatcher
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.TimeoutException
@@ -43,12 +50,29 @@ fun <T> LiveData<T>.getOrAwaitValue(
 /**
  * Observes a [LiveData] until the `block` is done executing.
  */
-suspend fun <T> LiveData<T>.observeForTesting(block: suspend  () -> Unit) {
+suspend fun <T> LiveData<T>.observeForTesting(block: suspend () -> Unit) {
     val observer = Observer<T> { }
     try {
         observeForever(observer)
         block()
     } finally {
         removeObserver(observer)
+    }
+}
+
+@ExperimentalCoroutinesApi
+class CoroutinesTestRule(
+    val testDispatcher: CoroutineDispatcher = Dispatchers.Unconfined
+) : TestWatcher() {
+
+    override fun starting(description: org.junit.runner.Description) {
+        super.starting(description)
+        Dispatchers.setMain(testDispatcher)
+    }
+
+    override fun finished(description: org.junit.runner.Description) {
+        super.finished(description)
+        Dispatchers.resetMain()
+        testDispatcher.cancel()
     }
 }

@@ -11,6 +11,10 @@ val repoModule = module {
     }
 
     single {
-        Interactors(GetListings(get()))
+        Interactors(get())
+    }
+
+    single {
+        GetListings(get())
     }
 }

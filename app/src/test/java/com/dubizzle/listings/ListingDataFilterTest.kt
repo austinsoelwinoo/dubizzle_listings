@@ -20,7 +20,7 @@ class ListingDataFilterTest {
             false,
             UIOption.DISPLAY_SIMPLE,
             UIOption.SORT_DATE_O_N,
-            generateListings().results
+            generateListings()
         )
     }
 
