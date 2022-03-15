@@ -6,6 +6,7 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.junit4.ComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.core.view.isVisible
@@ -61,25 +62,17 @@ class DListActivityTest {
         Intents.init()
     }
 
-    fun asyncTimer(delay: Long = 1000) {
-        AsyncTimer.start(delay)
-        composeTestRule.waitUntil(
-            condition = { AsyncTimer.expired },
-            timeoutMillis = delay + 1000
-        )
-    }
-
     @Test
     fun item_loaded_navigated_properly() {
         val button = composeTestRule.onNode(hasTestTag("LoadingListItemTestTag0"))
         button.assertIsDisplayed()
-        asyncTimer(12000)
+        asyncTimer(composeTestRule, 12000)
         button.assertDoesNotExist()
 
-        val listingCard =
-            composeTestRule.onNode(hasTestTag("ListingTestTag4878bf592579410fba52941d00b62f94"))
-        listingCard.assertIsDisplayed()
-        listingCard.performClick()
+        composeTestRule
+            .onNode(hasTestTag("ListingTestTag4878bf592579410fba52941d00b62f94"))
+            .assertIsDisplayed()
+            .performClick()
 
         intended(hasComponent(DDetailsActivity::class.java.name))
         intended(hasExtraWithKey(DDetailsActivity.INTENT_EXTRA_PARAM_LISTING))
@@ -95,6 +88,15 @@ class DListActivityTest {
         Intents.release()
     }
 
+}
+
+
+fun asyncTimer(composeTestRule: ComposeTestRule, delay: Long = 1000) {
+    AsyncTimer.start(delay)
+    composeTestRule.waitUntil(
+        condition = { AsyncTimer.expired },
+        timeoutMillis = delay + 1000
+    )
 }
 
 object AsyncTimer {
