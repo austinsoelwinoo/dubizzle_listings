@@ -1,8 +1,7 @@
-package com.dubizzle.core
+package com.dubizzle.listings
 
-import com.dubizzle.core.domain.Listing
+import com.dubizzle.listings.core.domain.Listing
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
