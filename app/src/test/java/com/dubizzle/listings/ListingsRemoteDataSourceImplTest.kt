@@ -1,7 +1,7 @@
 package com.dubizzle.listings
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.dubizzle.core.domain.Listing
+import com.dubizzle.listings.core.domain.Listing
 import com.dubizzle.listings.framework.ListingsRemoteDataSourceImpl
 import com.dubizzle.listings.framework.api.ListingApiResponse
 import com.dubizzle.listings.framework.api.ListingsApi
