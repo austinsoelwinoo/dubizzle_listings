@@ -1,4 +1,4 @@
-package com.dubizzle.core.common
+package com.dubizzle.listings.core.common
 
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -10,7 +10,6 @@ fun String.prettifiedDate(): String {
     return try {
         output.format(input.parse(this))
     } catch (e: ParseException) {
-        e.printStackTrace()
         this
     }
 }

@@ -4,6 +4,11 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasTestTag
+import androidx.compose.ui.test.junit4.ComposeTestRule
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.performClick
 import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.PerformException
@@ -34,7 +39,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.*
 import java.util.concurrent.TimeoutException
+import kotlin.concurrent.schedule
 
 
 @RunWith(AndroidJUnit4::class)
@@ -46,6 +53,9 @@ class DListActivityTest {
         DListActivity::class.java
     )
 
+    @get:Rule
+    val composeTestRule = createAndroidComposeRule(DListActivity::class.java)
+
     @Before
     fun setup() {
         // Initializes Intents and begins recording intents.
@@ -53,25 +63,19 @@ class DListActivityTest {
     }
 
     @Test
-    fun item_loaded_properly() {
-        onView(withId(R.id.pbLoading)).check(matches(isDisplayed()))
-        onView(isRoot()).perform(waitForView(R.id.recycler, 10000)).check(matches(isDisplayed()))
+    fun item_loaded_navigated_properly() {
+        val button = composeTestRule.onNode(hasTestTag("LoadingListItemTestTag0"))
+        button.assertIsDisplayed()
+        asyncTimer(composeTestRule, 12000)
+        button.assertDoesNotExist()
 
-        onView(withId(R.id.tvEmpty)).check(matches(not(isDisplayed())))
-
-        onView(withId(R.id.recycler))
-            .perform(
-                RecyclerViewActions.actionOnItemAtPosition<DListAdapter.ViewHolder>(
-                    2,
-                    click()
-                )
-            )
+        composeTestRule
+            .onNode(hasTestTag("ListingTestTag4878bf592579410fba52941d00b62f94"))
+            .assertIsDisplayed()
+            .performClick()
 
         intended(hasComponent(DDetailsActivity::class.java.name))
-        intended(hasExtraWithKey(DDetailsActivity.INTENT_EXTRA_PARAM_LISTING_CREATED_AT))
-        intended(hasExtraWithKey(DDetailsActivity.INTENT_EXTRA_PARAM_LISTING_PRICE))
-        intended(hasExtraWithKey(DDetailsActivity.INTENT_EXTRA_PARAM_LISTING_NAME))
-        intended(hasExtraWithKey(DDetailsActivity.INTENT_EXTRA_PARAM_LISTING_IMAGE_URL))
+        intended(hasExtraWithKey(DDetailsActivity.INTENT_EXTRA_PARAM_LISTING))
 
         onView(withId(R.id.tvListingName)).check(matches(textViewHasValue()))
         onView(withId(R.id.tvListingPrice)).check(matches(textViewHasValue()))
@@ -86,37 +90,21 @@ class DListActivityTest {
 
 }
 
-fun waitForView(viewId: Int, timeout: Long): ViewAction {
-    return object : ViewAction {
-        override fun getConstraints() = isRoot()
 
-        override fun getDescription(): String {
-            return "wait for a specific view with id $viewId; during $timeout millis."
-        }
+fun asyncTimer(composeTestRule: ComposeTestRule, delay: Long = 1000) {
+    AsyncTimer.start(delay)
+    composeTestRule.waitUntil(
+        condition = { AsyncTimer.expired },
+        timeoutMillis = delay + 1000
+    )
+}
 
-        override fun perform(uiController: UiController, rootView: View) {
-            uiController.loopMainThreadUntilIdle()
-            val startTime = System.currentTimeMillis()
-            val endTime = startTime + timeout
-            val viewMatcher = withId(viewId)
-
-            do {
-                // Iterate through all views on the screen and see if the view we are looking for is there already
-                for (child in TreeIterables.breadthFirstViewTraversal(rootView)) {
-                    // found view with required ID
-                    if (viewMatcher.matches(child) && child.isVisible) {
-                        return
-                    }
-                }
-                // Loops the main thread for a specified period of time.
-                // Control may not return immediately, instead it'll return after the provided delay has passed and the queue is in an idle state again.
-                uiController.loopMainThreadForAtLeast(100)
-            } while (System.currentTimeMillis() < endTime) // in case of a timeout we throw an exception -&gt; test fails
-            throw PerformException.Builder()
-                .withCause(TimeoutException())
-                .withActionDescription(this.description)
-                .withViewDescription(HumanReadables.describe(rootView))
-                .build()
+object AsyncTimer {
+    var expired = false
+    fun start(delay: Long = 1000) {
+        expired = false
+        Timer().schedule(delay) {
+            expired = true
         }
     }
 }

@@ -1,67 +1,95 @@
 package com.dubizzle.listings.presentation.list
 
 import android.os.Bundle
-import android.view.View
-import androidx.activity.viewModels
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.GridLayoutManager
-import com.dubizzle.core.domain.Listing
-import com.dubizzle.listings.databinding.ActivityListBinding
-import com.dubizzle.listings.framework.DListingsViewModelFactory
-import com.dubizzle.listings.presentation.calculateNoOfColumns
+import com.dubizzle.listings.core.domain.Listing
+import com.dubizzle.listings.presentation.components.*
 import com.dubizzle.listings.presentation.detail.DDetailsActivity
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.placeholder
+import com.google.accompanist.placeholder.material.shimmer
+import org.koin.androidx.viewmodel.ext.android.stateViewModel
+import timber.log.Timber
 
 class DListActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityListBinding
-
+    private val viewModel: DListViewModel by stateViewModel()
+    var text = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setSupportActionBar(binding.toolbar)
+        setContent {
+            MaterialTheme {
+                ScreenContent(state = viewModel)
+            }
+        }
+        viewModel.loadDocuments()
+    }
 
-        val mNoOfColumns: Int = calculateNoOfColumns(applicationContext, 130.0f)
-        val mGridLayoutManager = GridLayoutManager(applicationContext, mNoOfColumns)
-        val dListAdapter =
-            DListAdapter(applicationContext, object : DListAdapter.ActionClickListener {
-                override fun clicked(listing: Listing) {
-                    val currentActivity = this@DListActivity
-                    if (currentActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
-                        currentActivity.startActivity(
-                            DDetailsActivity.getCallingIntent(
-                                currentActivity,
-                                listing
+    private fun navigateToDetails(listing: Listing) {
+        val currentActivity = this@DListActivity
+        if (currentActivity.lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+            Timber.d("navigateToDetails ${listing.name}")
+            currentActivity.startActivity(
+                DDetailsActivity.getCallingIntent(
+                    currentActivity,
+                    listing
+                )
+            )
+        }
+    }
+
+    @Composable
+    fun ScreenContent(state: DListViewModel) {
+        Column {
+            AppBarHeader(state = state)
+            if (state.isLoading) {
+                LazyColumn {
+                    items(10) { index ->
+                        ListItem(
+                            index,
+                            Modifier.placeholder(
+                                highlight = PlaceholderHighlight.shimmer(),
+                                visible = true
                             )
                         )
                     }
                 }
-            })
-
-        binding.recycler.adapter = dListAdapter
-        binding.recycler.layoutManager = mGridLayoutManager
-
-        val modelD: DListViewModel by viewModels { DListingsViewModelFactory }
-        modelD.listings.observe(this) {
-            handleViewState(false,it)
-            dListAdapter.items = it
-        }
-
-        if (modelD.listings.value?.isEmpty() != false) {
-            handleViewState(true)
-            modelD.loadDocuments()
-        }
-    }
-
-    private fun handleViewState(isLoading: Boolean, items: List<Listing> = emptyList()) {
-        if (isLoading) {
-            binding.pbLoading.visibility = View.VISIBLE
-            binding.recycler.visibility = View.GONE
-            binding.tvEmpty.visibility = View.GONE
-        } else {
-            binding.pbLoading.visibility = View.GONE
-            binding.recycler.visibility = if (items.isNotEmpty()) View.VISIBLE else View.GONE
-            binding.tvEmpty.visibility = if (items.isEmpty()) View.VISIBLE else View.GONE
+            } else {
+                val groupedListings = state.result
+                val displayOptionItem = state.displayOptionItem
+                val onListingClick: (Listing) -> Unit = { navigateToDetails(it) }
+                if (groupedListings.values.flatten().isNotEmpty()) {
+                    when (displayOptionItem) {
+                        UIOption.DISPLAY_DETAILED -> ListListings(
+                            groupedListings,
+                            false,
+                            onListingClick
+                        )
+                        UIOption.DISPLAY_GRID -> GridListings(
+                            groupedListings.values.flatten(), onListingClick
+                        )
+                        else -> ListListings(groupedListings, true, onListingClick)
+                    }
+                } else {
+                    Text(
+                        text = "No listings found",
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(16.dp),
+                    )
+                }
+            }
         }
     }
 }

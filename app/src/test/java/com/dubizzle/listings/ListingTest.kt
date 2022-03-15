@@ -1,8 +1,7 @@
-package com.dubizzle.core
+package com.dubizzle.listings
 
-import com.dubizzle.core.domain.Listing
+import com.dubizzle.listings.core.domain.Listing
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -46,5 +45,17 @@ class ListingTest {
         assertEquals( "February 24, 2019",dummyListing.prettifiedCreatedAt())
 
         assertEquals("",emptyListing.prettifiedCreatedAt())
+    }
+
+    @Test
+    fun listing_extractPriceValue() {
+        assertEquals( 12,dummyListing.extractPriceValue())
+        assertEquals( 0,emptyListing.extractPriceValue())
+    }
+
+    @Test
+    fun listing_extractCreatedAtDateValue() {
+        assertEquals( "Sun Feb 24 02:50:36 ICT 2019",dummyListing.extractCreatedAtDateValue().toString())
+        assertEquals( null,emptyListing.extractCreatedAtDateValue())
     }
 }

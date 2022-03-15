@@ -1,7 +1,7 @@
 package com.dubizzle.listings.framework
 
-import com.dubizzle.core.data.ListingsRemoteDataSource
-import com.dubizzle.core.domain.Listing
+import com.dubizzle.listings.core.data.ListingsRemoteDataSource
+import com.dubizzle.listings.core.domain.Listing
 import com.dubizzle.listings.framework.api.ListingsApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

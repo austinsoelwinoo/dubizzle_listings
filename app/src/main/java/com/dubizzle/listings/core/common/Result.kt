@@ -1,4 +1,4 @@
-package com.dubizzle.core.common
+package com.dubizzle.listings.core.common
 sealed class Result<out R> {
 
     data class Success<out T>(val data: T) : Result<T>()

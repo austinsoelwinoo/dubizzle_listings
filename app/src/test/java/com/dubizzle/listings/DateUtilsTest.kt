@@ -1,6 +1,6 @@
-package com.dubizzle.core
+package com.dubizzle.listings
 
-import com.dubizzle.core.common.prettifiedDate
+import com.dubizzle.listings.core.common.prettifiedDate
 import org.junit.Assert
 import org.junit.Test
 
